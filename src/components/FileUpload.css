@@ -1,0 +1,242 @@
+/* Dark theme overrides for FileUpload component */
+
+/* Upload drop zone - dark theme */
+.file-upload-dropzone {
+    border: 2px dashed rgba(99, 102, 241, 0.3) !important;
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    backdrop-filter: blur(20px) !important;
+    color: #ffffff !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.file-upload-dropzone.drag-active {
+    border-color: rgba(99, 102, 241, 0.6) !important;
+    background: rgba(99, 102, 241, 0.08) !important;
+    transform: scale(1.02) !important;
+}
+
+.file-upload-dropzone:hover {
+    border-color: rgba(99, 102, 241, 0.5) !important;
+    background: rgba(99, 102, 241, 0.05) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Shimmer effect */
+.file-upload-dropzone::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.file-upload-dropzone:hover::before {
+    left: 100%;
+}
+
+/* Upload zone content styling */
+.file-upload-dropzone h3 {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.file-upload-dropzone p {
+    color: #9ca3af !important;
+    margin-bottom: 1rem !important;
+}
+
+.file-upload-dropzone .file-icon {
+    font-size: 3rem !important;
+    margin-bottom: 1rem !important;
+    filter: drop-shadow(0 4px 20px rgba(99, 102, 241, 0.3));
+}
+
+/* Upload button styling */
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6) !important;
+}
+
+/* File details card - dark theme */
+.file-details-card {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(20px) !important;
+    color: #ffffff !important;
+    padding: 1.5rem !important;
+}
+
+.file-details-card h4 {
+    color: #ffffff !important;
+    font-weight: 500 !important;
+}
+
+.file-details-card p {
+    color: #9ca3af !important;
+}
+
+/* Close button */
+.close-button {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
+    color: #9ca3af !important;
+    padding: 0.25rem 0.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.close-button:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: #ef4444 !important;
+}
+
+/* Progress bar */
+.progress-container {
+    width: 100% !important;
+    height: 8px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    margin-bottom: 1rem !important;
+}
+
+.progress-bar {
+    height: 100% !important;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    border-radius: 4px !important;
+    transition: width 0.3s ease !important;
+    position: relative !important;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.progress-bar.error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+}
+
+/* Status messages */
+.status-message {
+    color: #9ca3af !important;
+    font-size: 0.875rem !important;
+}
+
+.status-percentage {
+    color: #6366f1 !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+}
+
+/* Error message */
+.error-message {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    border-radius: 12px !important;
+    color: #ef4444 !important;
+    padding: 0.75rem !important;
+    margin-bottom: 1rem !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Success message */
+.success-message {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    border-radius: 12px !important;
+    color: #10b981 !important;
+    padding: 0.75rem !important;
+    backdrop-filter: blur(10px) !important;
+    animation: successSlideIn 0.3s ease-out !important;
+}
+
+@keyframes successSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* File icon styling */
+.file-icon-container {
+    width: 48px !important;
+    height: 48px !important;
+    background: rgba(99, 102, 241, 0.15) !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.5rem !important;
+    margin-right: 0.75rem !important;
+    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+}
+
+/* File info section */
+.file-info-section {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .file-upload-dropzone {
+        padding: 2rem 1rem !important;
+    }
+
+    .file-upload-dropzone .file-icon {
+        font-size: 2rem !important;
+    }
+
+    .btn-primary {
+        padding: 10px 20px !important;
+        font-size: 13px !important;
+    }
+}
