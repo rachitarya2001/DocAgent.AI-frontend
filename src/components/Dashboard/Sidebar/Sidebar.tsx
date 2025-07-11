@@ -1,5 +1,6 @@
 import React from 'react';
 import './Sidebar.css';
+import FileUpload from '../../FileUpload';
 
 interface UploadedDocument {
     id: string;
@@ -18,13 +19,15 @@ interface SidebarProps {
     selectedDocument: string | null;
     onDocumentSelect: (documentId: string) => void;
     onDocumentDelete: (documentId: string, filePath: string) => void; // ADD THIS
+    onUploadComplete: (document: UploadedDocument) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
     documents,
     selectedDocument,
     onDocumentSelect,
-    onDocumentDelete // ADD THIS
+    onDocumentDelete,
+    onUploadComplete
 }) => {
     const formatFileSize = (bytes: number): string => {
         return (bytes / 1024 / 1024).toFixed(2);
@@ -49,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     };
 
     const handleDeleteClick = (e: React.MouseEvent, doc: UploadedDocument) => {
-        e.stopPropagation(); // Prevent document selection when clicking delete
+        e.stopPropagation();
         if (window.confirm(`Are you sure you want to delete "${doc.name}"?`)) {
             onDocumentDelete(doc.id, doc.filePath || '');
         }
@@ -58,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     return (
         <div className="sidebar">
             <div className="logo">
-                <div className="logo-icon">DP</div>
+                <div className="logo-icon">DA</div>
                 <div>
                     <div className="logo-text">DocAgent.AI</div>
                     <div className="logo-subtitle">Intelligence Platform</div>
@@ -81,6 +84,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <div className="documents-list">
+                <div className="upload-section">
+                    <FileUpload onUploadComplete={onUploadComplete} />
+                </div>
                 <div className="documents-header">
                     Recent Documents ({documents.length})
                 </div>

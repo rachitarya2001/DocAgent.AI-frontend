@@ -83,6 +83,42 @@
     overflow-y: auto;
 }
 
+.upload-section {
+    margin-bottom: 32px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Compact FileUpload styling for sidebar */
+.upload-section .file-upload-dropzone {
+    padding: 2rem 1.5rem !important;
+    min-height: 200px !important;
+
+}
+
+.upload-section .file-upload-dropzone .file-icon {
+    font-size: 2.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.upload-section .file-upload-dropzone h3 {
+    font-size: 14px !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.upload-section .file-upload-dropzone p {
+    font-size: 12px !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.upload-section .btn-primary {
+    padding: 8px 16px !important;
+    font-size: 12px !important;
+}
+
+
 .documents-header {
     font-size: 12px;
     font-weight: 600;
@@ -90,7 +126,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 16px;
-    padding: 0 16px;
+    padding: 0;
 }
 
 .empty-state {

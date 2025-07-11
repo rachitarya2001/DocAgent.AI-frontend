@@ -120,10 +120,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount }) => {
     if (documentCount === 0) {
         return (
             <div className="chat-interface-container">
-                <div className="empty-chat-state">
-                    <div className="empty-chat-icon">💬</div>
-                    <div className="empty-chat-title">Upload a document first</div>
-                    <div className="empty-chat-subtitle">I'll be ready to answer questions once you upload a document!</div>
+                <div className="chat-welcome-state">
+                    <div className="welcome-content">
+                        <div className="welcome-icon">🤖</div>
+                        <div className="welcome-title">DocAgent.AI</div>
+                        <div className="welcome-subtitle">Upload documents and ask questions about them</div>
+                        <div className="welcome-features">
+                            <div className="feature-item">📄 PDF & Image Support</div>
+                            <div className="feature-item">🧠 AI-Powered Analysis</div>
+                            <div className="feature-item">💬 Natural Conversations</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

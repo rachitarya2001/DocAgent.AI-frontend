@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar/Sidebar';
-import MainContent from './MainContent/MainContent';
 import ChatPanel from './ChatPanel/ChatPanel';
 import ThreeBackground from '../ThreeBackground/ThreeBackground';
 import './Dashboard.css';
@@ -70,11 +69,7 @@ const Dashboard: React.FC = () => {
                     selectedDocument={selectedDocument}
                     onDocumentSelect={handleDocumentSelect}
                     onDocumentDelete={handleDocumentDelete}
-                />
-
-                <MainContent
                     onUploadComplete={handleUploadComplete}
-                    documentsCount={documents.length}
                 />
 
                 <ChatPanel
