@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './ChatPanel.css';
-import ChatInterface from '../ChatInterface';
+import ChatInterface from '../ChatInterface/ChatInterface';
 import { useAuth } from '../../../contexts/AuthContext';
 
 interface UploadedDocument {
@@ -124,7 +124,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ documents, selectedDocument }) =>
             </div>
 
             <div className="chat-content">
-                <ChatInterface documentCount={documents.length} />
+                <ChatInterface documentCount={documents.length} selectedDocument={selectedDocument} />
             </div>
         </div>
     );

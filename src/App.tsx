@@ -1,16 +1,25 @@
 import './App.css';
 import AuthWrapper from './components/Auth/AuthWrapper';
-import Login from './components/Auth/Login';
-import Signup from './components/Auth/Signup';
-import Dashboard from './components/Dashboard/Dashboard';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import PaymentSuccess from './components/payment/PaymentSuccess';
+import PaymentCancel from './components/payment/PaymentCancel';
 
 function App() {
   return (
     <AuthProvider>
-      <div className="App">
-        <AuthWrapper />
-      </div>
+      <Router>
+        <div className="App">
+          <Routes>
+            {/* Main app route */}
+            <Route path="/" element={<AuthWrapper />} />
+
+            {/* Payment routes */}
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-cancelled" element={<PaymentCancel />} />
+          </Routes>
+        </div>
+      </Router>
     </AuthProvider>
   );
 }

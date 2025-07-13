@@ -118,3 +118,68 @@
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(99, 102, 241, 0.5);
 }
+
+/* Usage Display Styles */
+.usage-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.usage-text {
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.usage-warning {
+    font-size: 12px;
+    color: #f59e0b;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Update textarea when limit reached */
+.chat-input-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Upgrade Section Styling */
+.upgrade-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.upgrade-button {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.upgrade-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.upgrade-button:active {
+    transform: translateY(0);
+}

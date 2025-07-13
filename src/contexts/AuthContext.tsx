@@ -4,13 +4,18 @@ interface User {
     id: string;
     username: string;
     email: string;
+    messagesUsed: number;
+    messagesTotalLimit: number;
+    plan: string;
 }
 
 interface AuthContextType {
     user: User | null;
     token: string | null;
     login: (token: string, user: User) => void;
+    updateUser: (userData: Partial<User>) => void;
     logout: () => void;
+
     isLoading: boolean;
 }
 
@@ -32,17 +37,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-
     useEffect(() => {
-        // Check for existing auth on app load
-        const savedToken = localStorage.getItem('token');
-        const savedUser = localStorage.getItem('user');
+        const checkAuthStatus = async () => {
+            const savedToken = localStorage.getItem('token');
+            const savedUser = localStorage.getItem('user');
 
-        if (savedToken && savedUser) {
-            setToken(savedToken);
-            setUser(JSON.parse(savedUser));
-        }
-        setIsLoading(false);
+            if (savedToken && savedUser) {
+                try {
+                    // Validate token with backend
+                    const response = await fetch('http://localhost:5000/api/validate-token', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${savedToken}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        setToken(savedToken);
+                        setUser(result.user); // Use fresh user data from backend
+                    } else {
+                        // Token invalid, clear storage
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    }
+                } catch (error) {
+                    console.error('Token validation error:', error);
+                    // On error, clear storage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            }
+            setIsLoading(false);
+        };
+
+        checkAuthStatus();
     }, []);
 
     const login = (token: string, user: User) => {
@@ -59,11 +88,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(null);
     };
 
+    const updateUser = (userData: Partial<User>) => {
+        if (user) {
+            const updatedUser = { ...user, ...userData };
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
+    };
+
     const value = {
         user,
         token,
         login,
         logout,
+        updateUser,
         isLoading
     };
 

@@ -15,6 +15,11 @@ const Signup: React.FC = () => {
         setIsLoading(true);
         setError('');
 
+        if (username.trim().length < 3) {
+            setError('Username must be at least 3 characters long');
+            setIsLoading(false);
+            return;
+        }
         try {
             const response = await fetch('http://localhost:5000/auth/register', {
                 method: 'POST',

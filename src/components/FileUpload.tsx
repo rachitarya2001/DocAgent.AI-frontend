@@ -122,7 +122,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
 
             setStatus({ step: 'uploading', progress: 30, message: 'Upload complete!' });
 
-            // Rest of your function stays the same...
             // Step 2: Extract text
             setStatus({ step: 'extracting', progress: 30, message: 'Extracting text...' });
 
@@ -145,7 +144,11 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
             const documentId = uploadResult.file.fileName.split('.')[0];
             const processResponse = await fetch('http://localhost:5000/api/process-document', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+
+                },
                 body: JSON.stringify({
                     filePath: uploadResult.file.path,
                     extractedText: extractResult.text,

@@ -1,0 +1,121 @@
+.payment-success-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: rgba(15, 17, 23, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 20px;
+}
+
+.payment-success-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 3rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+}
+
+.payment-title {
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.processing-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.processing-spinner {
+    font-size: 3rem;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.processing-message {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.processing-wait {
+    color: #9ca3af;
+    font-size: 1rem;
+}
+
+.result-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.result-message {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 1.6;
+    padding: 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.return-button {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+}
+
+.return-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+}
+
+.return-button:active {
+    transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .payment-success-card {
+        padding: 2rem;
+        margin: 1rem;
+    }
+
+    .payment-title {
+        font-size: 1.5rem;
+    }
+
+    .result-message {
+        font-size: 1rem;
+    }
+}
