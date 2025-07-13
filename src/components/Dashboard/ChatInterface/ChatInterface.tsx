@@ -337,7 +337,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
 
             <div className="chat-input-section">
 
-                {/* 👈 ADD ADMIN PANEL HERE */}
+
                 {/* Admin Testing Panel - Remove for production */}
                 <div className="admin-panel">
                     <button
