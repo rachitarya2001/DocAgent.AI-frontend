@@ -18,13 +18,19 @@ interface UploadedDocument {
 interface ChatPanelProps {
     documents: UploadedDocument[];
     selectedDocument: string | null;
+    onUpgrade?: () => void; // ← ADD THIS PROP
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ documents, selectedDocument }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({
+    documents,
+    selectedDocument,
+    onUpgrade // ← ADD THIS PROP
+}) => {
 
     const [showDropdown, setShowDropdown] = useState(false);
     const { user, logout } = useAuth();
     const dropdownRef = useRef<HTMLDivElement>(null);
+
     // Function to get user initials from username
     const getUserInitials = (username: string): string => {
         if (!username) return 'ME';
@@ -73,7 +79,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ documents, selectedDocument }) =>
         }
     };
 
-
     return (
         <div className="chat-panel">
             <div className="chat-header">
@@ -85,46 +90,57 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ documents, selectedDocument }) =>
                     </div>
                 </div>
 
-                {/* Replace the old chat-header-icon with user avatar */}
-                <div className="user-avatar-container" ref={dropdownRef}>
-                    <div
-                        className="user-avatar"
-                        onClick={toggleDropdown}
-                        title={user?.username || 'User'}
-                    >
-                        {getUserInitials(user?.username || 'User')}
-                    </div>
-
-                    {/* Dropdown will be added in next step */}
-
-                    {showDropdown && (
-                        <div className="user-dropdown">
-                            <div className="user-info">
-                                <div className="user-name">{user?.username || 'User'}</div>
-                                <div className="user-email">{user?.email || ''}</div>
-                            </div>
-                            <hr className="dropdown-divider" />
-                            <button
-                                className="logout-btn"
-                                onClick={handleLogout}
-                            >
-                                <span className="logout-icon">
-                                    <img
-                                        src="/assets/icons/logout.png"
-                                        alt="Logout"
-                                        width="16"
-                                        height="16"
-                                    />
-                                </span>
-                                Logout
-                            </button>
-                        </div>
+                {/* ✅ ADD HEADER RIGHT SECTION WITH UPGRADE BUTTON */}
+                <div className="header-right">
+                    {/* Upgrade button - LEFT of RA avatar */}
+                    {user && user.messagesUsed >= user.messagesTotalLimit && (
+                        <button
+                            className="header-upgrade-btn"
+                            onClick={onUpgrade}
+                        >
+                            Upgrade $2
+                        </button>
                     )}
+
+                    {/* User avatar - RIGHT side */}
+                    <div className="user-avatar-container" ref={dropdownRef}>
+                        <div
+                            className="user-avatar"
+                            onClick={toggleDropdown}
+                            title={user?.username || 'User'}
+                        >
+                            {getUserInitials(user?.username || 'User')}
+                        </div>
+
+                        {showDropdown && (
+                            <div className="user-dropdown">
+                                <div className="user-info">
+                                    <div className="user-name">{user?.username || 'User'}</div>
+                                    <div className="user-email">{user?.email || ''}</div>
+                                </div>
+                                <hr className="dropdown-divider" />
+                                <button
+                                    className="logout-btn"
+                                    onClick={handleLogout}
+                                >
+                                    <span className="logout-icon">
+                                        <img
+                                            src="/assets/icons/logout.png"
+                                            alt="Logout"
+                                            width="16"
+                                            height="16"
+                                        />
+                                    </span>
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
             <div className="chat-content">
-                <ChatInterface documentCount={documents.length} selectedDocument={selectedDocument} />
+                <ChatInterface documentCount={documents.length} selectedDocument={selectedDocument} onUpgrade={onUpgrade} />
             </div>
         </div>
     );

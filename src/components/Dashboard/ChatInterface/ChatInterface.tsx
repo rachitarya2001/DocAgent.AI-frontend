@@ -16,15 +16,17 @@ interface ChatMessage {
 interface ChatInterfaceProps {
     documentCount: number;
     selectedDocument: string | null;
+    onUpgrade?: () => void;
 }
 
-const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDocument }) => {
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDocument, onUpgrade }) => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { user, updateUser } = useAuth();
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     const [showAdminPanel, setShowAdminPanel] = useState(false);
     // Admin testing functions
@@ -84,6 +86,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+
+    useEffect(() => {
+        if (user && user.messagesUsed >= user.messagesTotalLimit) {
+            setShowUpgradeModal(true);
+        }
+    }, [user]);
+
+
+
     useEffect(() => {
         if (documentCount === 0 && messages.length > 0) {
             setMessages([]);
@@ -223,34 +234,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
         }
     };
 
-    // Handle upgrade button click - Real Stripe
-    const handleUpgrade = async () => {
-        try {
-            console.log('🚀 Starting real Stripe checkout...');
-
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/create-payment-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                console.log('💳 Redirecting to real Stripe checkout...');
-                // Redirect to real Stripe checkout page
-                window.location.href = result.checkoutUrl;
-            } else {
-                alert('Error creating checkout session: ' + result.error);
-            }
-        } catch (error) {
-            console.error('Upgrade error:', error);
-            alert('Error starting upgrade process');
-        }
-    };
 
 
     useEffect(() => {
@@ -371,17 +354,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                                 Messages: {user.messagesUsed}/{user.messagesTotalLimit} used
                             </span>
                             {user.messagesUsed >= user.messagesTotalLimit && (
-                                <div className="upgrade-section">
-                                    <span className="usage-warning">
-                                        ⚠️ Limit reached
-                                    </span>
-                                    <button
-                                        className="upgrade-button"
-                                        onClick={handleUpgrade}
-                                    >
-                                        Upgrade for $2 - Get 10 More Messages
-                                    </button>
-                                </div>
+                                <span className="usage-warning">
+                                    ⚠️ Limit reached
+                                </span>
                             )}
                         </div>
                     )}
@@ -412,6 +387,48 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                     Press Enter to send • Searching {documentCount} document{documentCount !== 1 ? 's' : ''}
                 </div>
             </div>
+            {/* ✅ ADD THIS MODAL */}
+            {showUpgradeModal && (
+                <div className="upgrade-modal-overlay">
+                    <div className="upgrade-modal">
+                        <div className="modal-header">
+                            <h3>🚀 Upgrade to Continue</h3>
+                            <button
+                                className="modal-close-x"
+                                onClick={() => setShowUpgradeModal(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className="modal-content">
+                            <p>You've used all <strong>{user?.messagesTotalLimit}</strong> free messages!</p>
+                            <p>Upgrade to Pro to get <strong>10 more messages</strong> and continue chatting with your documents.</p>
+                        </div>
+                        <div className="modal-buttons">
+                            <button
+                                onClick={() => {
+                                    console.log('🔍 Modal upgrade button clicked');
+                                    if (onUpgrade) {
+                                        onUpgrade();
+                                    } else {
+                                        alert('Please use the header button to upgrade.');
+                                    }
+                                }}
+                                className="upgrade-btn-modal"  // ← CORRECT CLASS
+                            >
+                                Upgrade for $2 - Get 10 More Messages
+                            </button>
+                            <button
+                                onClick={() => setShowUpgradeModal(false)}
+                                className="close-btn-modal"
+                            >
+                                Maybe Later
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };

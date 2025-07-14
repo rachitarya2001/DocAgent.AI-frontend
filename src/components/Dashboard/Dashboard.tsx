@@ -97,6 +97,29 @@ const Dashboard: React.FC = () => {
         }
     };
 
+    const handleUpgrade = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5000/api/create-payment-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                window.location.href = result.checkoutUrl;
+            } else {
+                alert('Error creating checkout session: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Upgrade error:', error);
+            alert('Error starting upgrade process');
+        }
+    };
+
 
     const handleDocumentSelect = (documentId: string) => {
         setSelectedDocument(documentId);
@@ -118,6 +141,7 @@ const Dashboard: React.FC = () => {
                 <ChatPanel
                     documents={documents}
                     selectedDocument={selectedDocument}
+                    onUpgrade={handleUpgrade}
                 />
             </div>
 
