@@ -4,7 +4,7 @@
     position: relative;
     height: 100vh;
     overflow: hidden;
-    background: #0f1117;
+    background: var(--bg-primary);
     font-family: 'Inter', sans-serif;
 }
 
@@ -107,7 +107,7 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -127,14 +127,14 @@
     align-items: center;
     padding: 8px 12px;
     margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-secondary);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-primary);
 }
 
 .usage-text {
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--text-muted);
     font-weight: 500;
 }
 

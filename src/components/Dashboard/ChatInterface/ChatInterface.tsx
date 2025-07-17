@@ -287,16 +287,16 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                                     {message.cached && (
                                         <span className="message-cached">📦 Cached</span>
                                     )}
-                                    {message.responseTime && (
+                                    {/* {message.responseTime && (
                                         <span className="message-timing">{message.responseTime}ms</span>
-                                    )}
+                                    )} */}
                                 </div>
 
-                                {message.sources && message.sources.length > 0 && (
+                                {/* {message.sources && message.sources.length > 0 && (
                                     <div className="message-sources">
-                                        📄 Found in {message.sources.length} text chunk{message.sources.length > 1 ? 's' : ''}
+                                         {message.sources.length} text chunk{message.sources.length > 1 ? 's' : ''}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         </div>
                     ))

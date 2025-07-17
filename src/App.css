@@ -33,7 +33,66 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Update your CSS variables with these better light theme colors */
+
+/* Dark Theme (Default) */
+:root {
+  --bg-primary: rgba(15, 17, 23, 0.95);
+  --bg-secondary: rgba(255, 255, 255, 0.05);
+  --bg-tertiary: rgba(255, 255, 255, 0.03);
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.2);
+  --text-primary: #ffffff;
+  --text-secondary: #e5e7eb;
+  --text-muted: #9ca3af;
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+}
+
+/* Improved Light Theme */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  /* Soft light gray instead of white */
+  --bg-secondary: #ffffff;
+  /* Pure white for cards */
+  --bg-tertiary: #f1f5f9;
+  /* Very light gray for subtle elements */
+  --border-primary: #e2e8f0;
+  /* Light gray borders */
+  --border-secondary: #cbd5e1;
+  /* Slightly darker borders */
+  --text-primary: #1e293b;
+  /* Dark slate for main text */
+  --text-secondary: #475569;
+  /* Medium slate for secondary text */
+  --text-muted: #64748b;
+  /* Muted slate for hints */
+  --accent-primary: #6366f1;
+  /* Keep same purple accent */
+  --accent-secondary: #8b5cf6;
+  /* Keep same accent */
+}
+
+/* Enhanced body styling */
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Add subtle shadows for light theme */
+[data-theme="light"] .enhanced-settings-card,
+[data-theme="light"] .sidebar,
+[data-theme="light"] .settings-header {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .modern-tab.active {
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
 }

@@ -3,6 +3,8 @@ import Sidebar from './Sidebar/Sidebar';
 import ChatPanel from './ChatPanel/ChatPanel';
 import ThreeBackground from '../ThreeBackground/ThreeBackground';
 import './Dashboard.css';
+import Analytics from './Analytics/Analytics';
+import Settings from './Settings/Settings';
 
 
 interface UploadedDocument {
@@ -20,6 +22,7 @@ interface UploadedDocument {
 const Dashboard: React.FC = () => {
     const [documents, setDocuments] = useState<UploadedDocument[]>([]);
     const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
+    const [activeView, setActiveView] = useState<string>('documents');
 
     useEffect(() => {
         const loadDocumentsFromAPI = async () => {
@@ -125,6 +128,10 @@ const Dashboard: React.FC = () => {
         setSelectedDocument(documentId);
     };
 
+    const handleViewChange = (view: string) => {
+        setActiveView(view);
+    };
+
     return (
         <div className="dashboard">
             <ThreeBackground />
@@ -136,13 +143,26 @@ const Dashboard: React.FC = () => {
                     onDocumentSelect={handleDocumentSelect}
                     onDocumentDelete={handleDocumentDelete}
                     onUploadComplete={handleUploadComplete}
+                    activeView={activeView}
+                    onViewChange={handleViewChange}
                 />
 
-                <ChatPanel
-                    documents={documents}
-                    selectedDocument={selectedDocument}
-                    onUpgrade={handleUpgrade}
-                />
+                {activeView === 'documents' ? (
+                    <ChatPanel
+                        documents={documents}
+                        selectedDocument={selectedDocument}
+                        onUpgrade={handleUpgrade}
+                    />
+                ) : activeView === 'analytics' ? (
+                    <Analytics />
+                ) : activeView === 'settings' ? (
+                    <Settings />
+
+                ) : (
+                    <div style={{ padding: '24px', color: 'white' }}>
+                        Settings coming soon...
+                    </div>
+                )}
             </div>
 
             {/* Floating particles */}

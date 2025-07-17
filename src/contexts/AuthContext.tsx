@@ -7,6 +7,11 @@ interface User {
     messagesUsed: number;
     messagesTotalLimit: number;
     plan: string;
+    preferences?: {
+        darkMode: boolean;
+        autoSave: boolean;
+        notifications: boolean;
+    };
 }
 
 interface AuthContextType {
@@ -14,8 +19,8 @@ interface AuthContextType {
     token: string | null;
     login: (token: string, user: User) => void;
     updateUser: (userData: Partial<User>) => void;
+    updatePreferences: (preferences: Partial<User['preferences']>) => void;
     logout: () => void;
-
     isLoading: boolean;
 }
 
@@ -96,12 +101,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     };
 
+    const updatePreferences = (preferences: Partial<User['preferences']>) => {
+        if (user) {
+            // Provide default values to ensure no undefined values
+            const defaultPreferences = {
+                darkMode: true,
+                autoSave: true,
+                notifications: false
+            };
+
+            const updatedUser = {
+                ...user,
+                preferences: {
+                    ...defaultPreferences,
+                    ...user.preferences,
+                    ...preferences
+                }
+            };
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
+    };
+
+
+
     const value = {
         user,
         token,
         login,
         logout,
         updateUser,
+        updatePreferences,
         isLoading
     };
 

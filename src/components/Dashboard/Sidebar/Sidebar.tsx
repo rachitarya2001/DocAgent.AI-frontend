@@ -20,6 +20,8 @@ interface SidebarProps {
     onDocumentSelect: (documentId: string) => void;
     onDocumentDelete: (documentId: string, filePath: string) => void; // ADD THIS
     onUploadComplete: (document: UploadedDocument) => void;
+    activeView: string;
+    onViewChange: (view: string) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -27,7 +29,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     selectedDocument,
     onDocumentSelect,
     onDocumentDelete,
-    onUploadComplete
+    onUploadComplete,
+    activeView,        // Add this
+    onViewChange
 }) => {
     const formatFileSize = (bytes: number): string => {
         return (bytes / 1024 / 1024).toFixed(2);
@@ -69,15 +73,24 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <div className="nav-section">
-                <div className="nav-item active">
+                <div
+                    className={`nav-item ${activeView === 'documents' ? 'active' : ''}`}
+                    onClick={() => onViewChange('documents')}
+                >
                     <div className="nav-icon">📁</div>
                     Documents
                 </div>
-                <div className="nav-item">
+                <div
+                    className={`nav-item ${activeView === 'analytics' ? 'active' : ''}`}
+                    onClick={() => onViewChange('analytics')}
+                >
                     <div className="nav-icon">📊</div>
                     Analytics
                 </div>
-                <div className="nav-item">
+                <div
+                    className={`nav-item ${activeView === 'settings' ? 'active' : ''}`}
+                    onClick={() => onViewChange('settings')}
+                >
                     <div className="nav-icon">⚙️</div>
                     Settings
                 </div>
@@ -101,7 +114,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                         <div
                             key={doc.id}
                             className={`document-item ${selectedDocument === doc.id ? 'selected' : ''}`}
-                            onClick={() => onDocumentSelect(doc.id)}
+                            onClick={() => {
+                                onDocumentSelect(doc.id);
+                                onViewChange('documents');
+                            }}
                         >
                             <div className="document-icon">
                                 {getFileIcon(doc.name)}
