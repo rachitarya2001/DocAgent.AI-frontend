@@ -21,8 +21,11 @@ function AppContent() {
     <Router>
       <div className="App">
         <Routes>
-          {/* Main app route */}
+          {/* Main app routes - all go to AuthWrapper */}
           <Route path="/" element={<AuthWrapper />} />
+          <Route path="/documents" element={<AuthWrapper />} />
+          <Route path="/analytics" element={<AuthWrapper />} />
+          <Route path="/settings" element={<AuthWrapper />} />
 
           {/* Payment routes */}
           <Route path="/payment-success" element={<PaymentSuccess />} />

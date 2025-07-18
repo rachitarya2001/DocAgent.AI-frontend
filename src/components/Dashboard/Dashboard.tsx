@@ -5,6 +5,7 @@ import ThreeBackground from '../ThreeBackground/ThreeBackground';
 import './Dashboard.css';
 import Analytics from './Analytics/Analytics';
 import Settings from './Settings/Settings';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 interface UploadedDocument {
@@ -22,7 +23,12 @@ interface UploadedDocument {
 const Dashboard: React.FC = () => {
     const [documents, setDocuments] = useState<UploadedDocument[]>([]);
     const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
-    const [activeView, setActiveView] = useState<string>('documents');
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const activeView = location.pathname === '/analytics' ? 'analytics'
+        : location.pathname === '/settings' ? 'settings'
+            : 'documents';
 
     useEffect(() => {
         const loadDocumentsFromAPI = async () => {
@@ -129,7 +135,11 @@ const Dashboard: React.FC = () => {
     };
 
     const handleViewChange = (view: string) => {
-        setActiveView(view);
+        if (view === 'documents') {
+            navigate('/');
+        } else {
+            navigate(`/${view}`);
+        }
     };
 
     return (

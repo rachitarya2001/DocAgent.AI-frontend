@@ -525,7 +525,7 @@ const Settings: React.FC = () => {
                         {/* Usage Chart */}
                         <div className="enhanced-settings-card usage-chart">
                             <div className="card-header">
-                                <h2>📈 Monthly Usage</h2>
+                                <h2>📈 Total Usage</h2>
                             </div>
                             <div className="chart-container">
                                 <div className="usage-bar">
