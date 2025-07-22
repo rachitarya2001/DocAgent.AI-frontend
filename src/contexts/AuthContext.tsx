@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { apiBaseUrl } from '../config/api';
 
 interface User {
     id: string;
@@ -50,7 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (savedToken && savedUser) {
                 try {
                     // Validate token with backend
-                    const response = await fetch('http://localhost:5000/api/validate-token', {
+                    const response = await fetch(`${apiBaseUrl}/api/validate-token`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${savedToken}`
@@ -59,8 +60,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
                     if (response.ok) {
                         const result = await response.json();
+                        console.log('🔍 AUTHCONTEXT - Validate response:', result.user);
+                        console.log('🔍 AUTHCONTEXT - Setting user to:', result.user);
                         setToken(savedToken);
-                        setUser(result.user); // Use fresh user data from backend
+                        setUser(result.user);
                     } else {
                         // Token invalid, clear storage
                         localStorage.removeItem('token');
@@ -80,6 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }, []);
 
     const login = (token: string, user: User) => {
+        console.log('🔍 AUTHCONTEXT - Login called with user:', user);
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         setToken(token);

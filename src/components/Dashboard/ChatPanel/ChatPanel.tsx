@@ -93,7 +93,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 {/* ✅ ADD HEADER RIGHT SECTION WITH UPGRADE BUTTON */}
                 <div className="header-right">
                     {/* Upgrade button - LEFT of RA avatar */}
-                    {user && user.messagesUsed >= user.messagesTotalLimit && (
+                    {user && user.messagesUsed >= user.messagesTotalLimit && user.plan === 'free' && (
                         <button
                             className="header-upgrade-btn"
                             onClick={onUpgrade}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { useAuth } from '../../contexts/AuthContext';
-
+import { apiBaseUrl } from '../../config/api';
 const Signup: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -21,7 +21,7 @@ const Signup: React.FC = () => {
             return;
         }
         try {
-            const response = await fetch('http://localhost:5000/auth/register', {
+            const response = await fetch(`${apiBaseUrl}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

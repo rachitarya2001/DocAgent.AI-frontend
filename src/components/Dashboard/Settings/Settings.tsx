@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import './Settings.css';
+import { apiBaseUrl } from '../../../config/api';
 
 const Settings: React.FC = () => {
     const { user, logout, updateUser, updatePreferences } = useAuth();
@@ -33,7 +34,7 @@ const Settings: React.FC = () => {
         const loadPreferences = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('http://localhost:5000/api/user/preferences', {
+                const response = await fetch(`${apiBaseUrl}/api/user/preferences`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -119,7 +120,7 @@ const Settings: React.FC = () => {
         }
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/user/profile', {
+            const response = await fetch(`${apiBaseUrl}/api/user/profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -228,7 +229,7 @@ const Settings: React.FC = () => {
         // API call to change password
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/user/change-password', {
+            const response = await fetch(`${apiBaseUrl}/api/user/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -277,7 +278,7 @@ const Settings: React.FC = () => {
         try {
             setPreferencesLoading(true);
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/user/preferences', {
+            const response = await fetch(`${apiBaseUrl}/api/user/preferences`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

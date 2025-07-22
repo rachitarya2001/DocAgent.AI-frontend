@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LabelList } from 'recharts';
-
 import './Analytics.css';
+import { apiBaseUrl } from '../../../config/api';
 
 interface AnalyticsData {
     totalDocuments: number;
@@ -29,7 +29,7 @@ const Analytics: React.FC = () => {
         const fetchAnalytics = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('http://localhost:5000/api/analytics', {
+                const response = await fetch(`${apiBaseUrl}/api/analytics`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

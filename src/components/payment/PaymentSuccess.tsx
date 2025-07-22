@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import './PaymentSuccess.css';
+import { apiBaseUrl } from '../../config/api';
 
 const PaymentSuccess: React.FC = () => {
     const { updateUser } = useAuth();
@@ -17,7 +18,7 @@ const PaymentSuccess: React.FC = () => {
                 if (sessionId) {
                     // Call backend to verify payment and upgrade user
                     const token = localStorage.getItem('token');
-                    const response = await fetch('http://localhost:5000/api/verify-payment', {
+                    const response = await fetch(`${apiBaseUrl}/api/verify-payment`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

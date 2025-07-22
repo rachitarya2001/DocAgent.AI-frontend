@@ -1,6 +1,7 @@
+
 import React, { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import "./FileUpload.css"
-
+import { apiBaseUrl } from '../config/api';
 interface ProcessingStatus {
     step: 'uploading' | 'extracting' | 'processing' | 'complete' | 'error';
     progress: number;
@@ -88,8 +89,8 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
             const formData = new FormData();
             formData.append('document', fileToProcess);
 
-            console.log('Uploading to:', 'http://localhost:5000/api/upload');
-            const uploadResponse = await fetch('http://localhost:5000/api/upload', {
+            console.log('Uploading to:', `${apiBaseUrl}/api/upload`);
+            const uploadResponse = await fetch(`${apiBaseUrl}/api/upload`, {
                 method: 'POST',
                 body: formData,
             });
@@ -125,7 +126,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
             // Step 2: Extract text
             setStatus({ step: 'extracting', progress: 30, message: 'Extracting text...' });
 
-            const extractResponse = await fetch('http://localhost:5000/api/extract-text', {
+            const extractResponse = await fetch(`${apiBaseUrl}/api/extract-text`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ filePath: uploadResult.file.path }),
@@ -142,7 +143,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
             setStatus({ step: 'processing', progress: 60, message: 'Processing for AI...' });
 
             const documentId = uploadResult.file.fileName.split('.')[0];
-            const processResponse = await fetch('http://localhost:5000/api/process-document', {
+            const processResponse = await fetch(`${apiBaseUrl}/api/process-document`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

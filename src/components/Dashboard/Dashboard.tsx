@@ -6,7 +6,7 @@ import './Dashboard.css';
 import Analytics from './Analytics/Analytics';
 import Settings from './Settings/Settings';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { apiBaseUrl } from '../../config/api';
 
 interface UploadedDocument {
     id: string;
@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
                 if (!token) return;
 
                 console.log('📄 Loading documents from API...');
-                const response = await fetch('http://localhost:5000/api/my-documents', {
+                const response = await fetch(`${apiBaseUrl}/api/my-documents`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -76,7 +76,7 @@ const Dashboard: React.FC = () => {
 
     const handleDocumentDelete = async (documentId: string, filePath: string) => {
         try {
-            const response = await fetch('http://localhost:5000/api/delete-document', {
+            const response = await fetch(`${apiBaseUrl}/api/delete-document`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ const Dashboard: React.FC = () => {
     const handleUpgrade = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/create-payment-session', {
+            const response = await fetch(`${apiBaseUrl}/api/create-payment-session`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

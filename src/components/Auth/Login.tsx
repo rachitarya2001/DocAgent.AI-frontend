@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { useAuth } from '../../contexts/AuthContext';
+import { apiBaseUrl } from '../../config/api';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ const Login: React.FC = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:5000/auth/login', {
+            const response = await fetch(`${apiBaseUrl}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

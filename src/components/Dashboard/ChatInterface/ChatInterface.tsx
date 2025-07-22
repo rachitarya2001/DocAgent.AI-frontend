@@ -1,7 +1,7 @@
 import { useAuth } from '../../../contexts/AuthContext';
 import React, { useState, useRef, useEffect } from 'react';
 import './ChatInterface.css';
-
+import { apiBaseUrl } from '../../../config/api';
 
 interface ChatMessage {
     id: string;
@@ -27,8 +27,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { user, updateUser } = useAuth();
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-
     const [showAdminPanel, setShowAdminPanel] = useState(false);
+    const [showDailyLimitModal, setShowDailyLimitModal] = useState(false);
+
     // Admin testing functions
     const setMessageCount = (count: number) => {
         updateUser({ messagesUsed: count });
@@ -59,7 +60,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
             try {
                 console.log(`💬 Loading chat for document: ${selectedDocument}`);
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:5000/api/chat/${selectedDocument}`, {
+                const response = await fetch(`${apiBaseUrl}/api/chat/${selectedDocument}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -112,7 +113,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
             console.log(`💾 Saving message to DB for document: ${selectedDocument}`);
 
             const token = localStorage.getItem('token');
-            await fetch('http://localhost:5000/api/save-message', {
+            await fetch(`${apiBaseUrl}/api/save-message`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -137,6 +138,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
 
     const sendQuestion = async () => {
         console.log('🔍 selectedDocument at send time:', selectedDocument);
+        console.log('🔍 DEBUG - User plan:', user?.plan, 'Messages:', user?.messagesUsed, '/', user?.messagesTotalLimit);
         if (!inputValue.trim() || isLoading || documentCount === 0) return;
         const token = localStorage.getItem('token');
         console.log('🔍 Token from localStorage:', token);
@@ -156,7 +158,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
 
         try {
             console.log('🔍 Sending request with token:', token);
-            const response = await fetch('http://localhost:5000/api/ask-question', {
+            const response = await fetch(`${apiBaseUrl}/api/ask-question`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -209,6 +211,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
             console.error('Chat error:', error);
         } finally {
             setIsLoading(false);
+        }
+
+        if (user && user.messagesUsed >= user.messagesTotalLimit) {
+            console.info('🔍 LIMIT REACHED - Plan:', user.plan, 'Should show:', user.plan === 'free' ? 'Upgrade' : 'Daily Limit');
+            if (user.plan === 'free') {
+                setShowUpgradeModal(true);
+            } else if (user.plan === 'pro') {
+                setShowDailyLimitModal(true);
+            }
+            setIsLoading(false);
+            return;
         }
     };
 
@@ -287,16 +300,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                                     {message.cached && (
                                         <span className="message-cached">📦 Cached</span>
                                     )}
-                                    {/* {message.responseTime && (
-                                        <span className="message-timing">{message.responseTime}ms</span>
-                                    )} */}
                                 </div>
-
-                                {/* {message.sources && message.sources.length > 0 && (
-                                    <div className="message-sources">
-                                         {message.sources.length} text chunk{message.sources.length > 1 ? 's' : ''}
-                                    </div>
-                                )} */}
                             </div>
                         </div>
                     ))
@@ -371,7 +375,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                             (user && user.messagesUsed >= user.messagesTotalLimit)
                                 ? "Message limit reached - Upgrade to continue..."
                                 : "Ask a question about your documents..."}
-                        disabled={isLoading || (user ? user.messagesUsed >= user.messagesTotalLimit : false)}
+                        disabled={isLoading}
                         rows={1}
                     />
                     <button
@@ -414,7 +418,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                                         alert('Please use the header button to upgrade.');
                                     }
                                 }}
-                                className="upgrade-btn-modal"  // ← CORRECT CLASS
+                                className="upgrade-btn-modal"
                             >
                                 Upgrade for $2 - Get 10 More Messages
                             </button>
@@ -423,6 +427,40 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                                 className="close-btn-modal"
                             >
                                 Maybe Later
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* NEW MODAL */}
+            {showDailyLimitModal && (
+                <div className="upgrade-modal-overlay">
+                    <div className="upgrade-modal">
+                        <div className="modal-header">
+                            <h3>📊 Daily Limit Reached</h3>
+                            <button
+                                className="modal-close-x"
+                                onClick={() => setShowDailyLimitModal(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className="modal-content">
+                            <p>You've used all <strong>20 Pro messages</strong> today!</p>
+                            <p>Your messages will reset tomorrow.</p>
+                        </div>
+                        <div className="modal-buttons">
+                            <button
+                                onClick={() => setShowDailyLimitModal(false)}
+                                className="upgrade-btn-modal"
+                            >
+                                Got it
+                            </button>
+                            <button
+                                onClick={() => setShowDailyLimitModal(false)}
+                                className="close-btn-modal"
+                            >
+                                Close
                             </button>
                         </div>
                     </div>
