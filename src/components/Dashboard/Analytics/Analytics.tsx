@@ -9,15 +9,15 @@ interface AnalyticsData {
     totalMessages: number;
     totalChats: number;
     documentsWithChats: number;
-    lastDocumentUploaded: string | null;
-    lastUploadDate: string | null;
-    largestDocument: { name: string; size: number } | null;
-    mostAccessedDocument: { name: string; messageCount: number; documentId: string } | null;
-    documentMessagesData: { name: string; messages: number; documentId: string }[];
+    lastDocumentUploaded?: string | null;
+    lastUploadDate?: string | null;
+    largestDocument?: { name: string; size: number } | null;
+    mostAccessedDocument?: { name: string; messageCount: number; documentId: string } | null;
+    documentMessagesData?: { name: string; messages: number; documentId: string }[];
     messagesUsed: number;
     messagesTotalLimit: number;
     plan: string;
-    averageMessagesPerDocument: number;
+    averageMessagesPerDocument?: number;
 }
 
 const Analytics: React.FC = () => {
@@ -90,11 +90,13 @@ const Analytics: React.FC = () => {
         ];
 
         // Mock document messages data (we'll make this real later)
-        const documentData = analytics.documentMessagesData.map(doc => ({
-            name: formatFileName(doc.name),
-            messages: doc.messages,
-            documentId: doc.documentId
-        }));
+        const documentData = (analytics.documentMessagesData && Array.isArray(analytics.documentMessagesData))
+            ? analytics.documentMessagesData.map(doc => ({
+                name: formatFileName(doc.name),
+                messages: doc.messages,
+                documentId: doc.documentId
+            }))
+            : []; // ✅ Return empty array if data is missing
 
         return { usageData, documentData };
     };
@@ -119,8 +121,8 @@ const Analytics: React.FC = () => {
                 <div className="analytics-card">
                     <div className="card-icon">💬</div>
                     <div className="card-content">
-                        <div className="card-number">{analytics.totalMessages}</div>
-                        <div className="card-label">Total Messages</div>
+                        <div className="card-number">{analytics.messagesUsed}</div>
+                        <div className="card-label">Messages Used</div>
                     </div>
                 </div>
 
@@ -264,7 +266,7 @@ const Analytics: React.FC = () => {
                             <div className="card-title">Avg Messages/Document</div>
                         </div>
                         <div className="card-content">
-                            <div className="card-number">{analytics.averageMessagesPerDocument.toFixed(1)}</div>
+                            <div className="card-number">{analytics.averageMessagesPerDocument?.toFixed(1) ?? '0.0'}</div>
                             <div className="card-sub-text">messages per doc</div>
                         </div>
                     </div>

@@ -2,6 +2,8 @@
 import React, { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import "./FileUpload.css"
 import { apiBaseUrl } from '../config/api';
+import toast from 'react-hot-toast';
+
 interface ProcessingStatus {
     step: 'uploading' | 'extracting' | 'processing' | 'complete' | 'error';
     progress: number;
@@ -95,15 +97,12 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
                 body: formData,
             });
 
-            // ADD DEBUGGING HERE
-            console.log('Upload response status:', uploadResponse.status);
-            console.log('Upload response ok:', uploadResponse.ok);
-            console.log('Upload response type:', uploadResponse.headers.get('content-type'));
 
             if (!uploadResponse.ok) {
                 // Get error details before throwing
                 const errorText = await uploadResponse.text();
                 console.log('Error response text:', errorText);
+                toast.error(`Upload failed: ${uploadResponse.status}`);
                 throw new Error(`Upload failed: ${uploadResponse.status} - ${errorText}`);
             }
 
@@ -178,16 +177,19 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
             };
 
             onUploadComplete(document);
+            toast.success('Document processed successfully! Ready for AI chat.');
             setTimeout(() => {
                 resetUpload();
             }, 2000);
 
         } catch (error) {
             console.error('Processing error:', error);
+            const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+            toast.error(`❌ ${errorMessage}`);
             setStatus({
                 step: 'error',
                 progress: 0,
-                message: error instanceof Error ? error.message : 'An error occurred'
+                message: errorMessage
             });
             setError(error instanceof Error ? error.message : 'An error occurred');
         }

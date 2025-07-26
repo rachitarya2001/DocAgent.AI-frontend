@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import './Settings.css';
 import { apiBaseUrl } from '../../../config/api';
+import toast from 'react-hot-toast';
 
 const Settings: React.FC = () => {
     const { user, logout, updateUser, updatePreferences } = useAuth();
@@ -48,7 +49,7 @@ const Settings: React.FC = () => {
                     }
                 }
             } catch (error) {
-                console.error('❌ Error loading preferences:', error);
+                console.error('Error loading preferences:', error);
             }
         };
 
@@ -135,7 +136,7 @@ const Settings: React.FC = () => {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                console.log('✅ Profile updated successfully:', result.user);
+                console.log('Profile updated successfully:', result.user);
 
                 updateUser({
                     username: result.user.username,
@@ -144,19 +145,19 @@ const Settings: React.FC = () => {
 
                 setIsEditingProfile(false);
 
-                alert('✅ Profile updated successfully!');
+                toast.success('✅ Profile updated successfully!');
 
 
             } else {
                 if (result.message.includes('email')) {
                     setProfileErrors({ email: result.message });
                 } else {
-                    alert('❌ Failed to update profile: ' + result.message);
+                    toast.error('❌ Failed to update profile: ' + result.message);
                 }
             }
         } catch (error) {
-            console.error('❌ Network error:', error);
-            alert('❌ Network error. Please check your connection and try again.');
+            console.error('Network error:', error);
+            toast.error('❌ Network error. Please check your connection and try again.');
         }
     };
 
@@ -244,19 +245,19 @@ const Settings: React.FC = () => {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                console.log('✅ Password changed successfully');
+                console.log('Password changed successfully');
                 setIsChangingPassword(false);
-                alert('✅ Password changed successfully!');
+                toast.success('Password changed successfully!');
             } else {
                 if (result.message.includes('current password')) {
                     setPasswordErrors({ currentPassword: result.message });
                 } else {
-                    alert('❌ Failed to change password: ' + result.message);
+                    toast.error('Failed to change password: ' + result.message);
                 }
             }
         } catch (error) {
-            console.error('❌ Network error:', error);
-            alert('❌ Network error. Please try again.');
+            console.error('Network error:', error);
+            toast.error(' Network error. Please try again.');
         }
     };
 
@@ -300,8 +301,11 @@ const Settings: React.FC = () => {
                 updatePreferences({
                     [preference]: !newValue
                 });
-                alert('❌ Failed to save preference: ' + result.message);
+                toast.error('❌ Failed to save preference: ' + result.message);
+            } else {
+                toast.success(`✅ ${preference} setting saved!`);
             }
+
         } catch (error) {
             // Revert on error
             setPreferences(prev => ({
@@ -311,8 +315,8 @@ const Settings: React.FC = () => {
             updatePreferences({
                 [preference]: !newValue
             });
-            console.error('❌ Error saving preference:', error);
-            alert('❌ Network error. Please try again.');
+            console.error('Error saving preference:', error);
+            toast.error('Network error. Please try again.');
         } finally {
             setPreferencesLoading(false);
         }

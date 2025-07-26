@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './Login.css';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiBaseUrl } from '../../config/api';
+import toast from 'react-hot-toast';
+
 const Signup: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -32,12 +34,15 @@ const Signup: React.FC = () => {
             const data = await response.json();
 
             if (data.success) {
+                toast.success(`Welcome to DocAgent.AI, ${data.user.username}!`);
                 login(data.token, data.user);
                 console.log('Signup successful:', data.user);
             } else {
+                toast.error(` ${data.message}`);
                 setError(data.message);
             }
         } catch (error) {
+            toast.error(' Signup failed. Please try again.');
             setError('Signup failed. Please try again.');
             console.error('Signup error:', error);
         } finally {

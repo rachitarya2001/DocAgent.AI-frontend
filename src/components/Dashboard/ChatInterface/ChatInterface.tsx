@@ -27,38 +27,16 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { user, updateUser } = useAuth();
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-    const [showAdminPanel, setShowAdminPanel] = useState(false);
     const [showDailyLimitModal, setShowDailyLimitModal] = useState(false);
 
-    // Admin testing functions
-    const setMessageCount = (count: number) => {
-        updateUser({ messagesUsed: count });
-    };
-
-    const setPlan = (plan: 'free' | 'pro') => {
-        const limit = plan === 'free' ? 10 : 20;
-        updateUser({ plan, messagesTotalLimit: limit });
-    };
-
-    const resetAccount = () => {
-        updateUser({
-            messagesUsed: 0,
-            plan: 'free',
-            messagesTotalLimit: 10
-        });
-    };
-
-    // ADD THIS NEW useEffect:
     useEffect(() => {
         const loadChatHistory = async () => {
             if (!selectedDocument) {
-                console.log('❌ No selectedDocument, clearing messages');
-                setMessages([]); // Clear messages when no document selected
+                setMessages([]);
                 return;
             }
 
             try {
-                console.log(`💬 Loading chat for document: ${selectedDocument}`);
                 const token = localStorage.getItem('token');
                 const response = await fetch(`${apiBaseUrl}/api/chat/${selectedDocument}`, {
                     headers: {
@@ -68,14 +46,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
 
                 if (response.ok) {
                     const result = await response.json();
-                    console.log(`💬 Chat API response:`, result);
                     setMessages(result.messages);
-                    console.log(`💬 Loaded ${result.messages.length} messages for document`);
                 } else {
-                    console.error('❌ Chat API failed:', response.status); // ← ADD THIS
+                    console.error('Chat API failed:', response.status);
                 }
             } catch (error) {
-                console.error('❌ Error loading chat history:', error);
+                console.error('Error loading chat history:', error);
             }
         };
 
@@ -88,12 +64,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    useEffect(() => {
-        if (user && user.messagesUsed >= user.messagesTotalLimit) {
-            setShowUpgradeModal(true);
-        }
-    }, [user]);
-
 
 
     useEffect(() => {
@@ -105,13 +75,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
     // ADD THIS FUNCTION:
     const saveMessageToDB = async (message: ChatMessage) => {
         if (!selectedDocument) {
-            console.log('❌ Cannot save: no selectedDocument');
-            return; // ← MOVE return AFTER the log
+            console.log(' Cannot save: no selectedDocument');
+            return;
         }
 
         try {
-            console.log(`💾 Saving message to DB for document: ${selectedDocument}`);
-
             const token = localStorage.getItem('token');
             await fetch(`${apiBaseUrl}/api/save-message`, {
                 method: 'POST',
@@ -125,24 +93,30 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                 })
             }).then(res => {
                 if (res.ok) {
-                    console.log('💾 Message saved to database successfully');
+                    console.log('Message saved to database successfully');
                 } else {
-                    console.error('❌ Save failed:', res.status);
+                    console.error('Save failed:', res.status);
                 }
             });
         } catch (error) {
-            console.error('❌ Error saving message:', error);
+            console.error(' Error saving message:', error);
         }
     };
 
 
     const sendQuestion = async () => {
-        console.log('🔍 selectedDocument at send time:', selectedDocument);
-        console.log('🔍 DEBUG - User plan:', user?.plan, 'Messages:', user?.messagesUsed, '/', user?.messagesTotalLimit);
+
         if (!inputValue.trim() || isLoading || documentCount === 0) return;
+        // CHECK MESSAGE LIMIT BEFORE SENDING
+        if (user && user.messagesUsed >= user.messagesTotalLimit) {
+            if (user.plan === 'free') {
+                setShowUpgradeModal(true);
+            } else if (user.plan === 'pro') {
+                setShowDailyLimitModal(true);
+            }
+            return;
+        }
         const token = localStorage.getItem('token');
-        console.log('🔍 Token from localStorage:', token);
-        console.log('🔍 User from context:', user);
 
         const userMessage: ChatMessage = {
             id: Date.now().toString(),
@@ -157,7 +131,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
         setIsLoading(true);
 
         try {
-            console.log('🔍 Sending request with token:', token);
             const response = await fetch(`${apiBaseUrl}/api/ask-question`, {
                 method: 'POST',
                 headers: {
@@ -176,8 +149,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
             }
 
             const result = await response.json();
-            console.log('🔍 Full API response:', result);
-
             const assistantMessage: ChatMessage = {
                 id: (Date.now() + 1).toString(),
                 type: 'assistant',
@@ -211,17 +182,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
             console.error('Chat error:', error);
         } finally {
             setIsLoading(false);
-        }
-
-        if (user && user.messagesUsed >= user.messagesTotalLimit) {
-            console.info('🔍 LIMIT REACHED - Plan:', user.plan, 'Should show:', user.plan === 'free' ? 'Upgrade' : 'Daily Limit');
-            if (user.plan === 'free') {
-                setShowUpgradeModal(true);
-            } else if (user.plan === 'pro') {
-                setShowDailyLimitModal(true);
-            }
-            setIsLoading(false);
-            return;
         }
     };
 
@@ -323,32 +283,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
             </div>
 
             <div className="chat-input-section">
-
-
-                {/* Admin Testing Panel - Remove for production */}
-                <div className="admin-panel">
-                    <button
-                        className="admin-toggle"
-                        onClick={() => setShowAdminPanel(!showAdminPanel)}
-                    >
-                        🔧 Admin Controls
-                    </button>
-
-                    {showAdminPanel && (
-                        <div className="admin-controls">
-                            <h4>Testing Controls:</h4>
-                            <div className="admin-buttons">
-                                <button onClick={() => setMessageCount(9)}>Set 9/10 Messages</button>
-                                <button onClick={() => setMessageCount(10)}>Set 10/10 (Limit)</button>
-                                <button onClick={() => setPlan('pro')}>Make Pro User</button>
-                                <button onClick={() => resetAccount()}>Reset to Free</button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-
-
                 <div className="chat-input-wrapper">
 
                     {/* Usage Display */}
@@ -405,13 +339,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                             </button>
                         </div>
                         <div className="modal-content">
-                            <p>You've used all <strong>{user?.messagesTotalLimit}</strong> free messages!</p>
-                            <p>Upgrade to Pro to get <strong>10 more messages</strong> and continue chatting with your documents.</p>
+                            <p>You've used all <strong>{user?.messagesTotalLimit}</strong> free messages today!</p>
+                            <p>Upgrade to Pro to get <strong>20 messages per day</strong> and continue chatting with your documents.</p>
                         </div>
                         <div className="modal-buttons">
                             <button
                                 onClick={() => {
-                                    console.log('🔍 Modal upgrade button clicked');
                                     if (onUpgrade) {
                                         onUpgrade();
                                     } else {
@@ -420,7 +353,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                                 }}
                                 className="upgrade-btn-modal"
                             >
-                                Upgrade for $2 - Get 10 More Messages
+                                Upgrade for $2 - Get 20 Messages/Day
                             </button>
                             <button
                                 onClick={() => setShowUpgradeModal(false)}
@@ -446,8 +379,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentCount, selectedDo
                             </button>
                         </div>
                         <div className="modal-content">
-                            <p>You've used all <strong>20 Pro messages</strong> today!</p>
-                            <p>Your messages will reset tomorrow.</p>
+                            <p>You've used all <strong>{user?.messagesTotalLimit} Pro messages</strong> today!</p>
+                            <p>Your messages will reset tomorrow at midnight.</p>
                         </div>
                         <div className="modal-buttons">
                             <button

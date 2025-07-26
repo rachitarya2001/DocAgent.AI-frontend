@@ -7,6 +7,7 @@ import Analytics from './Analytics/Analytics';
 import Settings from './Settings/Settings';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { apiBaseUrl } from '../../config/api';
+import toast from 'react-hot-toast';
 
 interface UploadedDocument {
     id: string;
@@ -36,7 +37,7 @@ const Dashboard: React.FC = () => {
                 const token = localStorage.getItem('token');
                 if (!token) return;
 
-                console.log('📄 Loading documents from API...');
+                console.log('Loading documents from API...');
                 const response = await fetch(`${apiBaseUrl}/api/my-documents`, {
                     method: 'GET',
                     headers: {
@@ -51,15 +52,15 @@ const Dashboard: React.FC = () => {
                     // ✅ ADD THIS: Auto-select first document if none selected
                     if (result.documents.length > 0 && !selectedDocument) {
                         setSelectedDocument(result.documents[0].id);
-                        console.log(`🎯 Auto-selected first document: ${result.documents[0].id}`);
+                        console.log(`Auto-selected first document: ${result.documents[0].id}`);
                     }
 
-                    console.log(`✅ Loaded ${result.documents.length} documents from API`);
+                    console.log(`Loaded ${result.documents.length} documents from API`);
                 } else {
-                    console.error('❌ Failed to load documents');
+                    console.error('Failed to load documents');
                 }
             } catch (error) {
-                console.error('❌ Error loading documents:', error);
+                console.error('Error loading documents:', error);
             }
         };
 
@@ -71,7 +72,7 @@ const Dashboard: React.FC = () => {
         setDocuments(prev => [...prev, document]);
 
         setSelectedDocument(document.id);
-        console.log(`🎯 Auto-selected newly uploaded document: ${document.id}`);
+        console.log(`Auto-selected newly uploaded document: ${document.id}`);
     };
 
     const handleDocumentDelete = async (documentId: string, filePath: string) => {
@@ -95,14 +96,15 @@ const Dashboard: React.FC = () => {
                 if (selectedDocument === documentId) {
                     setSelectedDocument(null);
                 }
-                console.log('✅ Document deleted successfully');
+                toast.success('🗑️ Document deleted successfully');
+                console.log('Document deleted successfully');
             } else {
-                console.error('❌ Failed to delete document');
-                alert('Failed to delete document. Please try again.');
+                console.error('Failed to delete document');
+                toast.error('Failed to delete document. Please try again.');
             }
         } catch (error) {
-            console.error('❌ Delete error:', error);
-            alert('Error deleting document. Please try again.');
+            console.error('Delete error:', error);
+            toast.error('Error deleting document. Please try again.');
         }
     };
 
@@ -125,7 +127,7 @@ const Dashboard: React.FC = () => {
             }
         } catch (error) {
             console.error('Upgrade error:', error);
-            alert('Error starting upgrade process');
+            toast.error('Error starting upgrade process');
         }
     };
 

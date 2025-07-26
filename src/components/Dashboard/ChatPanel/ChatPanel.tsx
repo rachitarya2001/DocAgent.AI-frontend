@@ -72,10 +72,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     const handleLogout = async () => {
         try {
             logout();
-            setShowDropdown(false); // Close dropdown after logout
+            setShowDropdown(false);
         } catch (error) {
             console.error('Logout error:', error);
-            // You can add error handling here if needed
         }
     };
 

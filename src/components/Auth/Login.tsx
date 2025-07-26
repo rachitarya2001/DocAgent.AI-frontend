@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Login.css';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiBaseUrl } from '../../config/api';
+import toast from 'react-hot-toast';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -27,13 +28,16 @@ const Login: React.FC = () => {
             const data = await response.json();
 
             if (data.success) {
+                toast.success(`Welcome back, ${data.user.username}!`);
                 login(data.token, data.user);
                 console.log('Login successful:', data.user);
             }
             else {
+                toast.error(`${data.message}`);
                 setError(data.message);
             }
         } catch (error) {
+            toast.error(' Login failed. Please try again.');
             setError('Login failed. Please try again.');
             console.error('Login error:', error);
         } finally {

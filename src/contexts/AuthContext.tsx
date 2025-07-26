@@ -60,8 +60,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
                     if (response.ok) {
                         const result = await response.json();
-                        console.log('🔍 AUTHCONTEXT - Validate response:', result.user);
-                        console.log('🔍 AUTHCONTEXT - Setting user to:', result.user);
                         setToken(savedToken);
                         setUser(result.user);
                     } else {
@@ -83,7 +81,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }, []);
 
     const login = (token: string, user: User) => {
-        console.log('🔍 AUTHCONTEXT - Login called with user:', user);
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         setToken(token);
