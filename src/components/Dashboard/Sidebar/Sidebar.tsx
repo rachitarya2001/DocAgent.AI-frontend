@@ -1,7 +1,7 @@
 import React from 'react';
 import './Sidebar.css';
 import FileUpload from '../../FileUpload';
-
+import { formatDocumentName, formatFileSize } from '../../../utils/formatters';
 interface UploadedDocument {
     id: string;
     name: string;
@@ -30,12 +30,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     onDocumentSelect,
     onDocumentDelete,
     onUploadComplete,
-    activeView,        // Add this
+    activeView,
     onViewChange
 }) => {
-    const formatFileSize = (bytes: number): string => {
-        return (bytes / 1024 / 1024).toFixed(2);
-    };
 
     const getFileIcon = (fileName: string): string => {
         const extension = fileName.toLowerCase().split('.').pop();
@@ -57,7 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     const handleDeleteClick = (e: React.MouseEvent, doc: UploadedDocument) => {
         e.stopPropagation();
-        if (window.confirm(`Are you sure you want to delete "${doc.name}"?`)) {
+        const cleanName = formatDocumentName(doc.name);
+        if (window.confirm(`Are you sure you want to delete "${cleanName}"?`)) {
             onDocumentDelete(doc.id, doc.filePath || '');
         }
     };
@@ -123,9 +121,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 {getFileIcon(doc.name)}
                             </div>
                             <div className="document-info">
-                                <h4>{doc.name}</h4>
+                                <h4>{formatDocumentName(doc.name)}</h4>
                                 <div className="document-meta">
-                                    {formatFileSize(doc.size)} MB • {doc.chunksStored} chunks
+                                    {formatFileSize(doc.size)} • {doc.chunksStored} chunks
                                 </div>
                             </div>
                             {/* ADD DELETE BUTTON */}

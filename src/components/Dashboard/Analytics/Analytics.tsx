@@ -3,6 +3,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LabelList } from 'recharts';
 import './Analytics.css';
 import { apiBaseUrl } from '../../../config/api';
+import { formatDocumentName, formatFileSize, formatDate } from '../../../utils/formatters';
 
 interface AnalyticsData {
     totalDocuments: number;
@@ -71,16 +72,6 @@ const Analytics: React.FC = () => {
         return (bytes / 1024 / 1024).toFixed(2) + ' MB';
     };
 
-    const formatDate = (dateString: string): string => {
-        return new Date(dateString).toLocaleDateString();
-    };
-    const formatFileName = (filePath: string): string => {
-        // Remove "uploads\" prefix and timestamp
-        const fileName = filePath.split('\\').pop() || filePath.split('/').pop() || filePath;
-        // Remove timestamp prefix (numbers and hyphens at start)
-        return fileName.replace(/^\d+-/, '');
-    };
-
     const prepareChartData = () => {
         if (!analytics) return null;
         // Usage chart data
@@ -92,7 +83,7 @@ const Analytics: React.FC = () => {
         // Mock document messages data (we'll make this real later)
         const documentData = (analytics.documentMessagesData && Array.isArray(analytics.documentMessagesData))
             ? analytics.documentMessagesData.map(doc => ({
-                name: formatFileName(doc.name),
+                name: formatDocumentName(doc.name),
                 messages: doc.messages,
                 documentId: doc.documentId
             }))
@@ -234,7 +225,7 @@ const Analytics: React.FC = () => {
                         <div className="card-content">
                             {analytics.lastDocumentUploaded ? (
                                 <>
-                                    <div className="card-main-text">{formatFileName(analytics.lastDocumentUploaded)}</div>
+                                    <div className="card-main-text">{formatDocumentName(analytics.lastDocumentUploaded)}</div>
                                     <div className="card-sub-text">{analytics.lastUploadDate ? formatDate(analytics.lastUploadDate) : 'Unknown'}</div>
                                 </>
                             ) : (
@@ -251,7 +242,7 @@ const Analytics: React.FC = () => {
                         <div className="card-content">
                             {analytics.largestDocument ? (
                                 <>
-                                    <div className="card-main-text">{formatFileName(analytics.largestDocument.name)}</div>
+                                    <div className="card-main-text">{formatDocumentName(analytics.largestDocument.name)}</div>
                                     <div className="card-sub-text">{formatFileSize(analytics.largestDocument.size)}</div>
                                 </>
                             ) : (
@@ -279,7 +270,7 @@ const Analytics: React.FC = () => {
                         <div className="card-content">
                             {analytics.mostAccessedDocument ? (
                                 <>
-                                    <div className="card-main-text">{formatFileName(analytics.mostAccessedDocument.name)}</div>
+                                    <div className="card-main-text">{formatDocumentName(analytics.mostAccessedDocument.name)}</div>
                                     <div className="card-sub-text">{analytics.mostAccessedDocument.messageCount} messages</div>
                                 </>
                             ) : (
